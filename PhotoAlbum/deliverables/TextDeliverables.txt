@@ -1,0 +1,84 @@
+BEFORE:
+
+public Set<Photo> findPhotosInDateRange(Date start, Date end){
+		Set<Photo> photos = new HashSet<Photo>();
+
+		for(Photo photo: getPhotos()) {
+            Date dateCreated = photo.getDateCreated();
+			if(!dateCreated.before(start) || !dateCreated.after(end))
+				photos.add(photo);
+		}
+
+		return Collections.unmodifiableSet(photos);
+	}
+
+=============
+AFTER:
+
+public Set<Photo> findPhotosInDateRange(Date start, Date end){
+		Set<Photo> photos = new HashSet<Photo>();
+
+		for(Photo photo: getPhotos()) {
+            Date dateCreated = photo.getDateCreated();
+			if(!dateCreated.before(start) && !dateCreated.after(end))
+				photos.add(photo);
+		}
+
+		return Collections.unmodifiableSet(photos);
+	}
+
+	=======
+	change: from or (||) to and (&&)
+
+
+
+================================================
+BEFORE:
+
+   public void flipHorizontal() {
+        int width = image.getWidth();
+        int height = image.getHeight();
+
+        for (int x = 0; x < width / 2; x++) {
+            for (int y = 0; y < height; y++) {
+                image.setRGB(width - 1 - x, y, image.getRGB(x, y));
+                image.setRGB(x, y, image.getRGB(width - 1 - x, y));
+            }
+        }
+    }
+
+=============
+AFTER:
+
+public void flipHorizontal() {
+        int width = image.getWidth();
+        int height = image.getHeight();
+
+        for (int x = 0; x < width / 2; x++) {
+            for (int y = 0; y < height; y++) {
+                int PIXEL1 = image.getRGB(x, y);
+
+                image.setRGB(x, y, image.getRGB(width - 1 - x, y));
+                image.setRGB(width - 1 - x, y, PIXEL1);
+            }
+        }
+    }
+
+    =======
+    	change: set the current X and Y values to be a constant since they obviously change after a transformation
+
+=========================================
+
+BEFORE:
+ private boolean isInBounds(int x, int y) {
+        return x > 0 && x < image.getWidth() && y > 0 && y < image.getHeight();}
+
+AFTER:
+ private boolean isInBounds(int x, int y) {
+        return x >= 0 && x < image.getWidth() && y >= 0 && y < image.getHeight();}
+
+    =======
+        change: pixel coordinates are zero-based and the isInBounds function did not account for those
+        pixels that eigther had x=0 or y=0.
+
+
