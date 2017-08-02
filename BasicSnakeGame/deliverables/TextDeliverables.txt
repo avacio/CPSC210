@@ -1,0 +1,29 @@
+Task M5: TWO BUGS
+
+1. Method:  CanGrow (and thus Move, since it directly affects that method) ---testGrowOnFeed
+
+Perhaps the source of the bug is that WebCAT's implementation may not keep track of the accumulative amount of
+nutrition consumed. It could be basing the results of CanGrow on a singular food item, instead of adding the
+nutritional value of all the food items, if they have yet to reach the value of NUTRITION_TO_GROW.
+
+For example, if a food item's nutritional value is NUTRITION_TO_GROW/2, then obviously the snake cannot grow yet,
+assuming it started at 0. If you add NUTRITION_TO_GROW/3, it should also not be able to grow since it would only
+have NUTRITION_TO_GROW*5/6. Adding NUTRITION_TO_GROW/4, however should be sufficient in allowing the snake to
+grow. If WebCAT's implementation did not account for the accumulation of food items with insufficient values,
+then this could be the source of the bug.
+
+
+2. Method:  RotateRight
+
+This bug is that the <RIGHT> direction was expected when rotating right from <UP>, but it instead got the
+<UP> direction. A possible source for this bug is that WebCAT's implementation did not specify the case for when
+the initial direction is <UP> correctly. It could mistakenly have specified the next direction after RotateRight
+is called from the <UP> direction, to remain at <UP>, instead of the <RIGHT> direction as to be expected.
+
+================
+Task M6:
+
+This test fails because they did not design the test with the principle of a "single point of control"
+in mind. Specifically, they did not design the test in terms of the constant, but instead used the specific
+number "5" which is the number of columns divided by 2 in the termination argument. Thus when the number
+of columns changed, the test remained the same and did not adjust to the changed constant.
